@@ -52,24 +52,3 @@ if __name__ == "__main__":
     #personalized_pagerank = nx.pagerank(G, alpha=0.85, personalization={'A': 0, 'B': 0, 'C': 1, 'D': 0})
     #weighted_pagerank = nx.pagerank(G_weighted, alpha=0.85)
     #weighted_personalized_pagerank = nx.pagerank(G_weighted, alpha=0.85, personalization={'A': 0, 'B': 0, 'C': 1, 'D': 0})
-    
-    G = nx.read_weighted_edgelist('user_relationship.csv', delimiter=',', create_using=nx.DiGraph(), encoding='utf-8')
-    recommended = []
-    relevant = []
-    file = open('ground-truth-relevance-users.csv', 'r')
-    for line in file:
-        l = line.strip()
-        x = l.split("|")
-        user_id = str(x[0])
-        id_list = x[1].split(",")
-        similar_user_list = similar_users(G, user_id, 15)
-        recommended.append(similar_user_list)
-        relevant.append(id_list)
-    file.close()
-    p_at_15 = [precision_at_k(r, rel, 15) for r, rel in zip(recommended, relevant)]
-    r_at_15 = [recall_at_k(r, rel, 15) for r, rel in zip(recommended, relevant)]
-    f_at_15 = [f_measure(p, r) for p, r in zip(p_at_15, r_at_15)]
-    print("Precision@10:", mean(p_at_15))
-    print("Recall@10:", mean(r_at_15))
-    print("F-measure@10:", mean(f_at_15))
-    print("MAP@10:", mean_average_precision(recommended, relevant))

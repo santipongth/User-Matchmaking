@@ -104,24 +104,3 @@ if __name__ == "__main__":
   #print(similar_users)
   #similar_users = similar_users_weight(G, "2", 10)
   #print(similar_users)
-
-  G = nx.read_weighted_edgelist('user_relationship.csv', delimiter=',', create_using=nx.DiGraph(), encoding='utf-8')
-  recommended = []
-  relevant = []
-  file = open('ground-truth-relevance-users.csv', 'r')
-  for line in file:
-    l = line.strip()
-    x = l.split("|")
-    user_id = str(x[0])
-    id_list = x[1].split(",")
-    similar_user_list = similar_users_weight(G, user_id, 20)
-    recommended.append(similar_user_list)
-    relevant.append(id_list)
-  file.close()
-  p_at_20 = [precision_at_k(r, rel, 20) for r, rel in zip(recommended, relevant)]
-  r_at_20 = [recall_at_k(r, rel, 20) for r, rel in zip(recommended, relevant)]
-  f_at_20 = [f_measure(p, r) for p, r in zip(p_at_20, r_at_20)]
-  print("Precision@10:", mean(p_at_20))
-  print("Recall@10:", mean(r_at_20))
-  print("F-measure@10:", mean(f_at_20))
-  print("MAP@10:", mean_average_precision(recommended, relevant))
